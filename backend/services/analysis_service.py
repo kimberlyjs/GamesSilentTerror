@@ -19,7 +19,7 @@ from schemas.chat import AnalysisResponse, AnalyzeChatRequest, FuzzyResult
 from services.fuzzy_service import calculate_suspicion, status_for_score
 
 
-logger = logging.getLogger("shadow_heist.analysis")
+logger = logging.getLogger("silent_terror.analysis")
 
 # TAHAP 3: aturan aplikasi untuk mengubah label intent menjadi tambahan
 # agresivitas. Angka ini ditentukan di kode, bukan probabilitas keluaran SVM.

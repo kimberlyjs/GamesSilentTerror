@@ -17,7 +17,7 @@ from models import auth_queries
 from services.password_service import verify_password
 
 
-logger = logging.getLogger("shadow_heist.auth")
+logger = logging.getLogger("silent_terror.auth")
 
 
 class AuthenticationError(RuntimeError):

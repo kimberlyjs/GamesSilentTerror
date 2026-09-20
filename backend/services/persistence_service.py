@@ -13,7 +13,7 @@ from services.fuzzy_service import status_for_score
 if TYPE_CHECKING:
     from services.analysis_service import AnalysisResult
 
-logger = logging.getLogger("shadow_heist.persistence")
+logger = logging.getLogger("silent_terror.persistence")
 
 
 class PersistenceError(RuntimeError):

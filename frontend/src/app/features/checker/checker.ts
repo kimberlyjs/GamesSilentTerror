@@ -68,7 +68,7 @@ export class Checker implements OnInit, OnDestroy {
     if (!isPlatformBrowser(this.platformId)) return;
     this.code =
       this.route.snapshot.queryParamMap.get('room') ??
-      sessionStorage.getItem('shadow_heist_room') ??
+      sessionStorage.getItem('silent_terror_room') ??
       '';
     if (this.code) this.watchRoom();
     this.timer = setInterval(() => {

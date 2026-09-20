@@ -18,7 +18,7 @@ interface LoginResponse {
   selector: 'app-auth',
   imports: [FormsModule],
   templateUrl: './auth.html',
-  styleUrl: './auth.css',
+  styleUrl: './auth.scss',
 })
 // CLASS KOMPONEN: mengatur perilaku halaman login, bukan memeriksa password di database.
 export class Auth {
@@ -29,6 +29,14 @@ export class Auth {
   hasAttemptedSubmit = false;
   isSubmitting = false;
   passwordVisible = false;
+
+  // Register form fields
+  registerName = '';
+  registerEmail = '';
+  registerEmailVerify = '';
+  registerPassword = '';
+  registerPasswordVerify = '';
+  registerError = '';
 
   // CONSTANT MILIK INSTANCE: batas tunggu login; private berarti dipakai di dalam class.
   private readonly loginTimeoutMs = 15_000;
@@ -45,7 +53,7 @@ export class Auth {
   // GETTER: menghasilkan label dari state saat ini; template membacanya seperti property.
   get statusLabel(): string {
     if (this.isSubmitting) return 'VERIFYING IDENTITY';
-    if (this.errorMessage) return 'ACCESS CHECK FAILED';
+    if (this.errorMessage || this.registerError) return 'CHECK FAILED';
     return 'SYSTEM ONLINE';
   }
 
@@ -56,7 +64,7 @@ export class Auth {
 
     this.hasAttemptedSubmit = true;
     this.username = this.username.trim();
-    this.errorMessage = this.validateCredentials();
+    this.errorMessage = this.validateLoginCredentials();
     if (this.errorMessage) return;
 
     this.isSubmitting = true;
@@ -82,6 +90,45 @@ export class Auth {
       });
   }
 
+  // METHOD EVENT REGISTER: validasi dan submit registration form
+  register(): void {
+    if (!isPlatformBrowser(this.platformId) || this.isSubmitting) return;
+
+    this.registerError = this.validateRegistration();
+    if (this.registerError) return;
+
+    this.isSubmitting = true;
+    const backendUrl = `${window.location.protocol}//${window.location.hostname}:8000`;
+    this.http
+      .post(`${backendUrl}/api/auth/register`, {
+        username: this.registerName.trim(),
+        email: this.registerEmail.trim(),
+        password: this.registerPassword,
+      })
+      .pipe(
+        timeout({ first: this.loginTimeoutMs }),
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => {
+          this.isSubmitting = false;
+          this.changeDetector.markForCheck();
+        }),
+      )
+      .subscribe({
+        next: () => {
+          // Auto-fill login form after successful registration
+          this.username = this.registerName.trim();
+          this.password = this.registerPassword;
+          this.registerName = '';
+          this.registerEmail = '';
+          this.registerEmailVerify = '';
+          this.registerPassword = '';
+          this.registerPasswordVerify = '';
+          this.registerError = '';
+        },
+        error: (error: unknown) => (this.registerError = this.describeRegisterError(error)),
+      });
+  }
+
   // METHOD EVENT TOMBOL: isi akun demo untuk development; belum mengirim login.
   useDevelopmentCredentials(): void {
     if (this.isSubmitting) return;
@@ -101,47 +148,72 @@ export class Auth {
     if (this.errorMessage) this.errorMessage = '';
   }
 
-  // PRIVATE METHOD: periksa input wajib di browser; keabsahan akun diperiksa backend.
-  private validateCredentials(): string {
-    if (!this.username && !this.password) return 'MASUKKAN USERNAME DAN PASSWORD TERLEBIH DAHULU.';
-    if (!this.username) return 'USERNAME WAJIB DIISI.';
-    if (!this.password) return 'PASSWORD WAJIB DIISI.';
+  // PRIVATE METHOD: validasi login credentials
+  private validateLoginCredentials(): string {
+    if (!this.username && !this.password) return 'ENTER USERNAME AND PASSWORD.';
+    if (!this.username) return 'USERNAME REQUIRED.';
+    if (!this.password) return 'PASSWORD REQUIRED.';
+    return '';
+  }
+
+  // PRIVATE METHOD: validasi registration form
+  private validateRegistration(): string {
+    if (!this.registerName) return 'DETECTIVE NAME REQUIRED.';
+    if (!this.registerEmail) return 'EMAIL REQUIRED.';
+    if (!this.registerEmailVerify) return 'VERIFY EMAIL REQUIRED.';
+    if (this.registerEmail !== this.registerEmailVerify) return 'EMAIL MISMATCH.';
+    if (!this.registerPassword) return 'PASSWORD REQUIRED.';
+    if (!this.registerPasswordVerify) return 'VERIFY PASSWORD REQUIRED.';
+    if (this.registerPassword !== this.registerPasswordVerify) return 'PASSWORD MISMATCH.';
+    if (this.registerPassword.length < 6) return 'PASSWORD TOO SHORT (MIN 6).';
     return '';
   }
 
   // PRIVATE METHOD: periksa respons, simpan sesi lokal, lalu buka main page.
   private completeLogin(response: LoginResponse): void {
     if (!response.access_token || !response.expires_at || !response.user?.username) {
-      this.errorMessage = 'RESPONS LOGIN TIDAK LENGKAP. COBA LAGI.';
+      this.errorMessage = 'INCOMPLETE RESPONSE. TRY AGAIN.';
       return;
     }
 
     try {
-      localStorage.setItem('shadow_heist_access_token', response.access_token);
-      localStorage.setItem('shadow_heist_access_token_expires_at', response.expires_at);
-      localStorage.setItem('shadow_heist_user', JSON.stringify(response.user));
-      sessionStorage.removeItem('shadow_heist_game_entry');
+      localStorage.setItem('silent_terror_access_token', response.access_token);
+      localStorage.setItem('silent_terror_access_token_expires_at', response.expires_at);
+      localStorage.setItem('silent_terror_user', JSON.stringify(response.user));
+      sessionStorage.removeItem('silent_terror_game_entry');
     } catch {
-      this.errorMessage = 'BROWSER MENOLAK PENYIMPANAN SESI. IZINKAN STORAGE LALU COBA LAGI.';
+      this.errorMessage = 'STORAGE DENIED. ENABLE STORAGE.';
       return;
     }
 
     this.password = '';
     void this.router.navigateByUrl('/main').catch(() => {
-      this.errorMessage = 'LOGIN BERHASIL, NAMUN MAIN PAGE GAGAL DIBUKA.';
+      this.errorMessage = 'LOGIN SUCCESSFUL, MAIN PAGE FAILED.';
     });
   }
 
-  // PRIVATE METHOD: ubah jenis error HTTP/timeout menjadi pesan yang bisa dipahami pengguna.
+  // PRIVATE METHOD: ubah jenis error HTTP/timeout menjadi pesan yang bisa dipahami pengguna (login).
   private describeLoginError(error: unknown): string {
-    if (error instanceof TimeoutError) return 'SERVER TERLALU LAMA MERESPONS. COBA LAGI.';
-    if (!(error instanceof HttpErrorResponse)) return 'TERJADI GANGGUAN TAK TERDUGA. COBA LAGI.';
-    if (error.status === 0) return 'TIDAK BISA TERHUBUNG KE SERVER. CEK KONEKSI LALU COBA LAGI.';
+    if (error instanceof TimeoutError) return 'SERVER TIMEOUT. RETRY.';
+    if (!(error instanceof HttpErrorResponse)) return 'UNEXPECTED ERROR. RETRY.';
+    if (error.status === 0) return 'CANNOT CONNECT. CHECK CONNECTION.';
     if (error.status === 400 || error.status === 422)
-      return 'DATA LOGIN BELUM VALID. PERIKSA KEMBALI.';
-    if (error.status === 401) return 'USERNAME ATAU PASSWORD SALAH.';
-    if (error.status === 429) return 'TERLALU BANYAK PERCOBAAN. TUNGGU SEBENTAR LALU COBA LAGI.';
-    if (error.status >= 500) return 'SERVER SEDANG BERMASALAH. COBA LAGI SEBENTAR LAGI.';
-    return 'LOGIN GAGAL. SILAKAN COBA LAGI.';
+      return 'INVALID DATA. CHECK INPUT.';
+    if (error.status === 401) return 'WRONG USERNAME OR PASSWORD.';
+    if (error.status === 429) return 'TOO MANY ATTEMPTS. WAIT.';
+    if (error.status >= 500) return 'SERVER ERROR. RETRY.';
+    return 'LOGIN FAILED. TRY AGAIN.';
+  }
+
+  // PRIVATE METHOD: ubah jenis error HTTP/timeout menjadi pesan yang bisa dipahami pengguna (register).
+  private describeRegisterError(error: unknown): string {
+    if (error instanceof TimeoutError) return 'SERVER TIMEOUT. RETRY.';
+    if (!(error instanceof HttpErrorResponse)) return 'UNEXPECTED ERROR. RETRY.';
+    if (error.status === 0) return 'CANNOT CONNECT. CHECK CONNECTION.';
+    if (error.status === 400 || error.status === 422)
+      return 'INVALID DATA. CHECK INPUT.';
+    if (error.status === 409) return 'USER ALREADY EXISTS.';
+    if (error.status >= 500) return 'SERVER ERROR. RETRY.';
+    return 'REGISTRATION FAILED. TRY AGAIN.';
   }
 }

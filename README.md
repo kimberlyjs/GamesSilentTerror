@@ -2,7 +2,7 @@
 
 Game deduksi sosial berbasis percakapan: Hitman menyusup di antara warga, sementara pemain mencari identitasnya melalui alibi dan observasi chat. **Zero economy** — tanpa budget, pembelian item, atau tebusan.
 
-Nama Silent Terror masih sementara. Nama repository, database, dan container masih menggunakan nama proyek lama, Shadow Heist.
+Proyek ini bernama **Silent Terror**; identitas aplikasi, database, container, dan browser session menggunakan nama yang sama.
 
 ## Status proyek
 
@@ -24,8 +24,8 @@ Tidak perlu memasang Python, Node.js, atau MySQL di host jika seluruh aplikasi d
 ### 1. Clone repository
 
 ```sh
-git clone https://github.com/Andysaputra1/GamesShadowHeist.git
-cd GamesShadowHeist
+git clone <repository-url>
+cd silent-terror
 ```
 
 Semua perintah Compose berikut dijalankan dari folder ini, tempat `docker-compose.yml` berada.
@@ -153,8 +153,8 @@ Buka `/admin` pada port 8000, login dengan admin development `user1` / `user132`
 - Pilih room untuk melihat aktivitas fungsi yang diinstrumentasi, parameter, hasil/status, dan trace SVM → fuzzy → prompt LLM → output → pengiriman chat. Ini bukan debugger semua fungsi Python. Event `running` adalah catatan saat fungsi mulai; lihat event akhir dengan `call_id` yang sama untuk hasilnya.
 - Log aktivitas dibatasi 2.000 event dalam memori, endpoint menampilkan 200 terbaru. Restart menghapus log ini. Password/token/API key disensor, tetapi chat, prompt, dan informasi role dalam trace tetap sensitif dan hanya untuk admin.
 
-Implementasi: `backend/controller/api/admin.py`, `backend/public/admin/`, `backend/services/ai_runtime_service.py`, dan `backend/services/activity_service.py`. Desain login/main page Angular tidak diubah.
-| MySQL dari host / DB client | `localhost:3307`, database `shadow_heist` |
+Implementasi: `backend/controller/api/admin.py`, `backend/public/admin/`, `backend/services/ai_runtime_service.py`, dan `backend/services/activity_service.py`.
+| MySQL dari host / DB client | `localhost:3307`, database `silent_terror` |
 | Ollama dari host (mode lokal) | http://localhost:11435 |
 
 Login aplikasi development: **`user1` / `user132`**. Akun ini disiapkan oleh migration saat inisialisasi database baru.
@@ -169,7 +169,7 @@ Timer standar 120/30/45 detik. Mode cepat di lobby memakai 20/15/15 detik, cocok
 
 Saat Day, tombol **Setuju skip diskusi** mempercepat ke Night setelah seluruh manusia yang masih hidup setuju. Bot tidak dihitung. Pemain dibungkam/disandera tetap boleh menyetujui karena ini bukan chat atau vote Tribunal; status mereka tetap tidak dipublikasikan. Persetujuan tidak bisa ditarik pada ronde itu. Pemain offline belum dianggap setuju; timer normal tetap berjalan.
 
-Selama pertandingan aktif, membuka halaman aplikasi lain/tab baru atau login ulang akan mengembalikan akun ke `/game` berdasarkan data backend, bukan hanya storage tab. Akun tidak bisa membuat/gabung pertandingan lain sebelum match selesai. Ini berlaku dalam aplikasi ini, bukan memaksa browser meninggalkan situs eksternal. Desain login dan main page tidak diubah.
+Selama pertandingan aktif, membuka halaman aplikasi lain/tab baru atau login ulang akan mengembalikan akun ke `/game` berdasarkan data backend, bukan hanya storage tab. Akun tidak bisa membuat/gabung pertandingan lain sebelum match selesai. Ini berlaku dalam aplikasi ini, bukan memaksa browser meninggalkan situs eksternal.
 
 ### Akun teman untuk multiplayer
 
@@ -217,7 +217,7 @@ docker compose restart gateway
 
 Jika mengubah daftar model lokal yang harus diunduh, jalankan pula `docker compose up -d ollama ollama-models` dan periksa log unduhannya. Perubahan kode Python yang di-bind-mount memerlukan `docker compose restart ai-engine`; frontend memantau perubahan source saat development.
 
-- Database disimpan di named volume `shadow_heist_mysql_data`.
+- Database disimpan di named volume `silent_terror_mysql_data`.
 - Model Ollama disimpan di named volume `games_ollama_data`.
 - `down` biasa mempertahankan kedua volume. **Jangan gunakan `docker compose down -v` jika data/model masih diperlukan: opsi itu menghapus named volume beserta isinya.** Volume persisten bukan pengganti backup.
 - Lobby, engine pertandingan, role/aksi/vote, dan konteks AI berada di memori satu proses backend. Reload/reconnect browser memulihkan snapshot dan 100 pesan terbaru selama proses yang sama hidup. Restart/recreate backend menghilangkan pertandingan aktif. Catatan chat/analisis di MySQL tetap tersimpan, tetapi belum memulihkan pertandingan. Jangan menjalankan beberapa worker backend sebelum menambahkan shared state/persistence engine.

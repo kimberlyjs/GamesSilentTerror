@@ -20,7 +20,7 @@ from services.fuzzy_service import calculate_suspicion, status_for_score
 from services.persistence_service import PersistenceError, PersistenceService
 
 
-logger = logging.getLogger("shadow_heist.socket")
+logger = logging.getLogger("silent_terror.socket")
 
 PlayerState = dict[str, int | float | str]
 

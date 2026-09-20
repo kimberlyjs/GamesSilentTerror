@@ -1,11 +1,11 @@
--- Shadow Heist initial schema. Applied automatically only when the MySQL
+-- Silent Terror initial schema. Applied automatically only when the MySQL
 -- Docker volume is created for the first time.
 
-CREATE DATABASE IF NOT EXISTS shadow_heist
+CREATE DATABASE IF NOT EXISTS silent_terror
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-USE shadow_heist;
+USE silent_terror;
 
 CREATE TABLE IF NOT EXISTS schema_migrations (
   version VARCHAR(50) NOT NULL PRIMARY KEY,

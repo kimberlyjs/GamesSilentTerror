@@ -24,7 +24,7 @@ export class RoomService {
   request(method: 'GET' | 'POST', path: string, body?: unknown) {
     const base = window.location.protocol + '//' + window.location.hostname + ':8000/api/rooms';
     const headers = new HttpHeaders({
-      Authorization: 'Bearer ' + (localStorage.getItem('shadow_heist_access_token') ?? ''),
+      Authorization: 'Bearer ' + (localStorage.getItem('silent_terror_access_token') ?? ''),
     });
     return this.http.request<Room>(method, base + path, { body, headers }).pipe(timeout(10000));
   }

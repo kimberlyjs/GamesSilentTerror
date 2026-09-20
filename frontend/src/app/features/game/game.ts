@@ -59,7 +59,7 @@ export class Game implements OnInit, OnDestroy {
   // INIT: polling menjaga snapshot setelah reconnect; Socket.IO membawa pesan/error langsung.
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platform)) return;
-    this.code = sessionStorage.getItem('shadow_heist_room') ?? '';
+    this.code = sessionStorage.getItem('silent_terror_room') ?? '';
     if (!this.code) {
       void this.router.navigateByUrl('/lobby');
       return;
@@ -67,7 +67,7 @@ export class Game implements OnInit, OnDestroy {
     this.refresh();
     this.poll = setInterval(() => this.refresh(), 1000);
     this.socket = io(`${window.location.protocol}//${window.location.hostname}:8000`, {
-      auth: { token: localStorage.getItem('shadow_heist_access_token'), room_code: this.code },
+      auth: { token: localStorage.getItem('silent_terror_access_token'), room_code: this.code },
       transports: ['websocket', 'polling'],
     });
     this.socket.on('connect', () => {

@@ -49,7 +49,7 @@ export class GameService {
   request(code: string, body?: unknown, action = 'play') {
     const base = `${window.location.protocol}//${window.location.hostname}:8000/api/rooms/${encodeURIComponent(code)}`;
     const headers = new HttpHeaders({
-      Authorization: 'Bearer ' + (localStorage.getItem('shadow_heist_access_token') ?? ''),
+      Authorization: 'Bearer ' + (localStorage.getItem('silent_terror_access_token') ?? ''),
     });
     return this.http
       .request<GameSnapshot>(body ? 'POST' : 'GET', base + (body ? '/' + action : '/game'), {

@@ -1,4 +1,4 @@
-"""Application composition root for the Shadow Heist Python backend.
+"""Application composition root for the Silent Terror Python backend.
 
 FastAPI routes are HTTP controllers; services own use cases and transactions.
 Models contain parameterized SQL, modules own infrastructure, and Socket.IO
@@ -26,7 +26,7 @@ from services.persistence_service import persistence_service
 
 
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("shadow_heist")
+logger = logging.getLogger("silent_terror")
 
 
 @asynccontextmanager

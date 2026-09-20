@@ -21,7 +21,7 @@ export class MainPage implements OnInit {
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
     try {
-      const storedUser = localStorage.getItem('shadow_heist_user');
+      const storedUser = localStorage.getItem('silent_terror_user');
       const user = storedUser ? (JSON.parse(storedUser) as { username?: string }) : null;
       this.username = user?.username || this.username;
     } catch {

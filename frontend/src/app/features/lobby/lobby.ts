@@ -50,9 +50,9 @@ export class Lobby implements OnInit, OnDestroy {
     if (!isPlatformBrowser(this.platformId)) return;
     try {
       this.username =
-        JSON.parse(localStorage.getItem('shadow_heist_user') ?? '{}').username || this.username;
+        JSON.parse(localStorage.getItem('silent_terror_user') ?? '{}').username || this.username;
     } catch {}
-    const code = sessionStorage.getItem('shadow_heist_room');
+    const code = sessionStorage.getItem('silent_terror_room');
     if (code) this.load('GET', '/' + encodeURIComponent(code));
     this.timer = setInterval(() => {
       if (this.room && !this.busy) this.load('GET', '/' + this.room.code);
@@ -108,7 +108,7 @@ export class Lobby implements OnInit, OnDestroy {
       .subscribe({
         next: () => {
           this.room = null;
-          sessionStorage.removeItem('shadow_heist_room');
+          sessionStorage.removeItem('silent_terror_room');
         },
         error: (error: HttpErrorResponse) => {
           this.error = error.error?.detail || 'Gagal keluar ruangan.';
@@ -132,8 +132,8 @@ export class Lobby implements OnInit, OnDestroy {
   // Tanda lokal bukan otorisasi backend; koneksi chat tetap memeriksa token dan keanggotaan.
   enterGame(): void {
     if (!this.room || this.busy) return;
-    sessionStorage.setItem('shadow_heist_room', this.room.code);
-    sessionStorage.setItem('shadow_heist_room_snapshot', JSON.stringify(this.room));
+    sessionStorage.setItem('silent_terror_room', this.room.code);
+    sessionStorage.setItem('silent_terror_room_snapshot', JSON.stringify(this.room));
     sessionStorage.setItem(gameEntryStorageKey, 'allowed');
     void this.router.navigateByUrl('/game');
   }
@@ -155,7 +155,7 @@ export class Lobby implements OnInit, OnDestroy {
         next: (room) => {
           this.room = room;
           this.error = '';
-          sessionStorage.setItem('shadow_heist_room', room.code);
+          sessionStorage.setItem('silent_terror_room', room.code);
           if (path.endsWith('/start')) {
             this.busy = false;
             this.enterGame();
@@ -164,12 +164,12 @@ export class Lobby implements OnInit, OnDestroy {
         error: (error: HttpErrorResponse) => {
           this.error = error.error?.detail || 'Server belum bisa dihubungi. Coba lagi.';
           if (error.status === 401) {
-            localStorage.removeItem('shadow_heist_access_token');
+            localStorage.removeItem('silent_terror_access_token');
             void this.router.navigateByUrl('/login');
           }
           if (method === 'GET' && error.status === 400) {
             this.room = null;
-            sessionStorage.removeItem('shadow_heist_room');
+            sessionStorage.removeItem('silent_terror_room');
           }
         },
       });

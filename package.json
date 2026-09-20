@@ -1,0 +1,12 @@
+{
+  "name": "silent-terror",
+  "private": true,
+  "scripts": {
+    "start": "npm --prefix frontend start",
+    "build": "npm --prefix frontend run build",
+    "test": "npm --prefix frontend test -- --watch=false"
+  },
+  "dependencies": {
+    "codex": "^0.2.3"
+  }
+}

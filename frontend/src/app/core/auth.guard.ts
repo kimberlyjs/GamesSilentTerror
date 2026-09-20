@@ -3,8 +3,8 @@ import { inject, PLATFORM_ID } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 
 // CONSTANT: nama penyimpanan token dan waktu kedaluwarsa pada browser.
-const TOKEN_KEY = 'shadow_heist_access_token';
-const EXPIRY_KEY = 'shadow_heist_access_token_expires_at';
+const TOKEN_KEY = 'silent_terror_access_token';
+const EXPIRY_KEY = 'silent_terror_access_token_expires_at';
 
 // FUNCTION GUARD (arrow): izinkan navigasi jika token lokal belum kedaluwarsa;
 // jika tidak, bersihkan sesi lokal dan arahkan ke login. Saat SSR, storage tidak dibaca.
@@ -21,7 +21,7 @@ export const authGuard: CanActivateFn = () => {
 
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(EXPIRY_KEY);
-  localStorage.removeItem('shadow_heist_user');
-  sessionStorage.removeItem('shadow_heist_game_entry');
+  localStorage.removeItem('silent_terror_user');
+  sessionStorage.removeItem('silent_terror_game_entry');
   return inject(Router).createUrlTree(['/login']);
 };

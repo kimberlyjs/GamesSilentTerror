@@ -25,7 +25,7 @@ class Settings(MySQLSettings):
         extra="ignore",
     )
 
-    app_name: str = "Shadow Heist Python Backend"
+    app_name: str = "Silent Terror Python Backend"
     app_environment: str = "development"
     admin_usernames: str = "user1"
     cors_origins: str = "http://localhost:4200,http://127.0.0.1:4200"

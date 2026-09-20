@@ -3,7 +3,7 @@
 services:
   ollama:
     image: ollama/ollama:latest
-    container_name: shadow_ollama
+    container_name: silent_ollama
     restart: unless-stopped
     ports:
       - "127.0.0.1:11435:11434"
@@ -19,7 +19,7 @@ services:
       retries: 30
       start_period: 10s
     networks:
-      - shadow-net
+      - silent-terror-net
 
   # One-shot initializer: downloads missing models after the server is ready.
   # Existing models stay in ollama_data, so subsequent up commands skip them.
@@ -44,13 +44,13 @@ services:
           fi
         done
     networks:
-      - shadow-net
+      - silent-terror-net
 
   ai-engine:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: shadow_python_backend
+    container_name: silent_python_backend
     expose:
       - "8000"
     environment:
@@ -71,28 +71,28 @@ services:
       CORS_ORIGINS: "${CORS_ORIGINS:-http://localhost:4200,http://127.0.0.1:4200}"
       MYSQL_HOST: mysql
       MYSQL_PORT: "3306"
-      MYSQL_DATABASE: shadow_heist
-      MYSQL_USER: "${MYSQL_USER:-shadow_app}"
-      MYSQL_PASSWORD: "${MYSQL_PASSWORD:-shadow_app_dev_2026}"
+      MYSQL_DATABASE: silent_terror
+      MYSQL_USER: "${MYSQL_USER:-silent_app}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD:-silent_app_dev_2026}"
     volumes:
       - ./backend:/app
     depends_on:
       mysql:
         condition: service_healthy
     networks:
-      - shadow-net
+      - silent-terror-net
 
   mysql:
     image: mysql:8.4.11
-    container_name: shadow_mysql
+    container_name: silent_mysql
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     ports:
       - "3307:3306"
     environment:
-      MYSQL_DATABASE: shadow_heist
-      MYSQL_USER: ${MYSQL_USER:-shadow_app}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-shadow_app_dev_2026}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-shadow_root_dev_2026}
+      MYSQL_DATABASE: silent_terror
+      MYSQL_USER: ${MYSQL_USER:-silent_app}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-silent_app_dev_2026}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-silent_root_dev_2026}
       MYSQL_ROOT_HOST: "%"
     volumes:
       - mysql_data:/var/lib/mysql
@@ -104,11 +104,11 @@ services:
       retries: 20
       start_period: 20s
     networks:
-      - shadow-net
+      - silent-terror-net
 
   phpmyadmin:
     image: phpmyadmin:5.2.3-apache
-    container_name: shadow_phpmyadmin
+    container_name: silent_phpmyadmin
     environment:
       PMA_HOST: mysql
       PMA_PORT: 3306
@@ -119,11 +119,11 @@ services:
       mysql:
         condition: service_healthy
     networks:
-      - shadow-net
+      - silent-terror-net
 
   gateway:
     image: nginx:1.31.4-alpine3.24
-    container_name: shadow_gateway
+    container_name: silent_gateway
     ports:
       - "8000:80"
     volumes:
@@ -134,13 +134,13 @@ services:
       phpmyadmin:
         condition: service_started
     networks:
-      - shadow-net
+      - silent-terror-net
 
   frontend:
     build:
       context: ./frontend 
       dockerfile: Dockerfile
-    container_name: shadow_frontend
+    container_name: silent_frontend
     ports:
       - "4200:4200"
     volumes:
@@ -149,10 +149,10 @@ services:
     depends_on:
       - ai-engine
     networks:
-      - shadow-net
+      - silent-terror-net
 
 networks:
-  shadow-net:
+  silent-terror-net:
     driver: bridge
 
 volumes:
@@ -160,4 +160,4 @@ volumes:
     # Reuse this project's existing model data across container recreation.
     name: games_ollama_data
   mysql_data:
-    name: shadow_heist_mysql_data
+    name: silent_terror_mysql_data

@@ -1,4 +1,4 @@
-# Shadow Heist Python Backend
+# Silent Terror Python Backend
 
 Struktur API menggunakan controller, services, dan model berisi SQL langsung.
 

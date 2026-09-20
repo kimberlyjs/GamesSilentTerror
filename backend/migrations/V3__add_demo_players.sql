@@ -1,6 +1,6 @@
 -- Development only: janice / user132 and kimberly / user132.
 -- INSERT IGNORE preserves existing accounts; this does not reset passwords.
-USE shadow_heist;
+USE silent_terror;
 
 INSERT IGNORE INTO user_accounts (username, display_name, password_hash)
 VALUES

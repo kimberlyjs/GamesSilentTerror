@@ -18,9 +18,9 @@ describe('navigation flow guards', () => {
 
   // TES: sesi lokal yang belum kedaluwarsa mengarahkan pengguna dari login ke main.
   it('sends an authenticated player away from Login to Main Page', () => {
-    localStorage.setItem('shadow_heist_access_token', 'valid-token');
+    localStorage.setItem('silent_terror_access_token', 'valid-token');
     localStorage.setItem(
-      'shadow_heist_access_token_expires_at',
+      'silent_terror_access_token_expires_at',
       new Date(Date.now() + 60_000).toISOString(),
     );
 

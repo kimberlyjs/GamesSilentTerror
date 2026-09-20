@@ -1,7 +1,7 @@
 -- Player accounts and opaque login sessions. Passwords are never stored in
 -- plaintext. The seeded development account is user1 / user132.
 
-USE shadow_heist;
+USE silent_terror;
 
 CREATE TABLE IF NOT EXISTS user_accounts (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,

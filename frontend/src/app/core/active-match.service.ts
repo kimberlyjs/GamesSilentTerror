@@ -19,7 +19,7 @@ export class ActiveMatchService {
 
   lookup() {
     if (!isPlatformBrowser(this.platform)) return of(null);
-    const token = localStorage.getItem('shadow_heist_access_token');
+    const token = localStorage.getItem('silent_terror_access_token');
     if (!token) return of(null);
     const base = `${location.protocol}//${location.hostname}:8000/api/rooms/active`;
     return this.http
@@ -34,8 +34,8 @@ export class ActiveMatchService {
 
   // Simpan pointer saja; role dan izin tetap diambil melalui API privat.
   remember(active: ActiveMatch): void {
-    sessionStorage.setItem('shadow_heist_room', active.code);
-    sessionStorage.setItem('shadow_heist_game_entry', 'allowed');
+    sessionStorage.setItem('silent_terror_room', active.code);
+    sessionStorage.setItem('silent_terror_game_entry', 'allowed');
   }
 }
 
@@ -52,14 +52,14 @@ export const activeMatchGuard: CanActivateFn = (_, state) => {
         service.remember(active);
         return isGame ? true : router.createUrlTree(['/game']);
       }
-      return isGame && sessionStorage.getItem('shadow_heist_game_entry') !== 'allowed'
+      return isGame && sessionStorage.getItem('silent_terror_game_entry') !== 'allowed'
         ? router.createUrlTree(['/main'])
         : true;
     }),
     catchError(() =>
       of(
         isGame
-          ? sessionStorage.getItem('shadow_heist_game_entry') === 'allowed' ||
+          ? sessionStorage.getItem('silent_terror_game_entry') === 'allowed' ||
               router.createUrlTree(['/main'])
           : true,
       ),

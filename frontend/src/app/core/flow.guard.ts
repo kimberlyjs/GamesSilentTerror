@@ -3,9 +3,9 @@ import { inject, PLATFORM_ID } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 
 // CONSTANT: kunci storage untuk sesi login dan izin masuk game dari lobby.
-const TOKEN_KEY = 'shadow_heist_access_token';
-const EXPIRY_KEY = 'shadow_heist_access_token_expires_at';
-const GAME_ENTRY_KEY = 'shadow_heist_game_entry';
+const TOKEN_KEY = 'silent_terror_access_token';
+const EXPIRY_KEY = 'silent_terror_access_token_expires_at';
+const GAME_ENTRY_KEY = 'silent_terror_game_entry';
 
 // FUNCTION HELPER: periksa keberadaan token dan masa berlaku lokal, bukan validasi API.
 function hasValidSession(): boolean {

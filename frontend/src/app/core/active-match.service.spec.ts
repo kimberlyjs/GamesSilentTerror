@@ -26,7 +26,7 @@ describe('active match recovery', () => {
   }
 
   it('recovers a fresh tab and redirects main to server-owned match', () => {
-    localStorage.setItem('shadow_heist_access_token', 'test-token');
+    localStorage.setItem('silent_terror_access_token', 'test-token');
     const results: (boolean | UrlTree)[] = [];
     navigate('/main').subscribe((value) => results.push(value));
     const request = TestBed.inject(HttpTestingController).expectOne((r) =>
@@ -35,11 +35,11 @@ describe('active match recovery', () => {
     expect(request.request.headers.get('Authorization')).toBe('Bearer test-token');
     request.flush({ active: { code: 'ABC123', match_id: 'one' } });
     expect(TestBed.inject(Router).serializeUrl(results[0] as UrlTree)).toBe('/game');
-    expect(sessionStorage.getItem('shadow_heist_room')).toBe('ABC123');
+    expect(sessionStorage.getItem('silent_terror_room')).toBe('ABC123');
   });
 
   it('allows game after restoring storage and allows main once finished', () => {
-    localStorage.setItem('shadow_heist_access_token', 'test-token');
+    localStorage.setItem('silent_terror_access_token', 'test-token');
     navigate('/game').subscribe((value) => expect(value).toBe(true));
     TestBed.inject(HttpTestingController)
       .expectOne((r) => r.url.endsWith('/active'))
